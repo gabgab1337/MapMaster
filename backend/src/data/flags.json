@@ -1,0 +1,229 @@
+[
+  {
+    "id": 1,
+    "country": "Poland",
+    "alpha2Code": "PL"
+  },
+  {
+    "id": 2,
+    "country": "Germany",
+    "alpha2Code": "DE"
+  },
+  {
+    "id": 3,
+    "country": "France",
+    "alpha2Code": "FR"
+  },
+  {
+    "id": 4,
+    "country": "Italy",
+    "alpha2Code": "IT"
+  },
+  {
+    "id": 5,
+    "country": "Spain",
+    "alpha2Code": "ES"
+  },
+  {
+    "id": 6,
+    "country": "United Kingdom",
+    "alpha2Code": "GB"
+  },
+  {
+    "id": 7,
+    "country": "United States",
+    "alpha2Code": "US"
+  },
+  {
+    "id": 8,
+    "country": "Canada",
+    "alpha2Code": "CA"
+  },
+  {
+    "id": 9,
+    "country": "Australia",
+    "alpha2Code": "AU"
+  },
+  {
+    "id": 10,
+    "country": "Brazil",
+    "alpha2Code": "BR"
+  },
+  {
+    "id": 11,
+    "country": "China",
+    "alpha2Code": "CN"
+  },
+  {
+    "id": 12,
+    "country": "India",
+    "alpha2Code": "IN"
+  },
+  {
+    "id": 13,
+    "country": "Japan",
+    "alpha2Code": "JP"
+  },
+  {
+    "id": 14,
+    "country": "Russia",
+    "alpha2Code": "RU"
+  },
+  {
+    "id": 15,
+    "country": "South Africa",
+    "alpha2Code": "ZA"
+  },
+  {
+    "id": 16,
+    "country": "Mexico",
+    "alpha2Code": "MX"
+  },
+  {
+    "id": 17,
+    "country": "Argentina",
+    "alpha2Code": "AR"
+  },
+  {
+    "id": 18,
+    "country": "Chile",
+    "alpha2Code": "CL"
+  },
+  {
+    "id": 19,
+    "country": "Colombia",
+    "alpha2Code": "CO"
+  },
+  {
+    "id": 20,
+    "country": "Peru",
+    "alpha2Code": "PE"
+  },
+  {
+    "id": 21,
+    "country": "Venezuela",
+    "alpha2Code": "VE"
+  },
+  {
+    "id": 22,
+    "country": "Saudi Arabia",
+    "alpha2Code": "SA"
+  },
+  {
+    "id": 23,
+    "country": "South Korea",
+    "alpha2Code": "KR"
+  },
+  {
+    "id": 24,
+    "country": "Turkey",
+    "alpha2Code": "TR"
+  },
+  {
+    "id": 25,
+    "country": "Egypt",
+    "alpha2Code": "EG"
+  }
+  ,
+  {
+    "id": 26,
+    "country": "Nigeria",
+    "alpha2Code": "NG"
+  },
+  {
+    "id": 27,
+    "country": "Kenya",
+    "alpha2Code": "KE"
+  },
+  {
+    "id": 28,
+    "country": "Ghana",
+    "alpha2Code": "GH"
+  },
+  {
+    "id": 29,
+    "country": "Ethiopia",
+    "alpha2Code": "ET"
+  },
+  {
+    "id": 30,
+    "country": "New Zealand",
+    "alpha2Code": "NZ"
+  },
+  {
+    "id": 31,
+    "country": "Sweden",
+    "alpha2Code": "SE"
+  },
+  {
+    "id": 32,
+    "country": "Norway",
+    "alpha2Code": "NO"
+  },
+  {
+    "id": 33,
+    "country": "Finland",
+    "alpha2Code": "FI"
+  },
+  {
+    "id": 34,
+    "country": "Denmark",
+    "alpha2Code": "DK"
+  },
+  {
+    "id": 35,
+    "country": "Netherlands",
+    "alpha2Code": "NL"
+  }
+  ,
+  {
+    "id": 36,
+    "country": "Belgium",
+    "alpha2Code": "BE"
+  },
+  {
+    "id": 37,
+    "country": "Switzerland",
+    "alpha2Code": "CH"
+  },
+  {
+    "id": 38,
+    "country": "Austria",
+    "alpha2Code": "AT"
+  },
+  {
+    "id": 39,
+    "country": "Portugal",
+    "alpha2Code": "PT"
+  },
+  {
+    "id": 40,
+    "country": "Greece",
+    "alpha2Code": "GR"
+  },
+  {
+    "id": 41,
+    "country": "Ireland",
+    "alpha2Code": "IE"
+  },
+  {
+    "id": 42,
+    "country": "Czech Republic",
+    "alpha2Code": "CZ"
+  },
+  {
+    "id": 43,
+    "country": "Hungary",
+    "alpha2Code": "HU"
+  },
+  {
+    "id": 44,
+    "country": "Romania",
+    "alpha2Code": "RO"
+  },
+  {
+    "id": 45,
+    "country": "Bulgaria",
+    "alpha2Code": "BG"
+  }
+]
