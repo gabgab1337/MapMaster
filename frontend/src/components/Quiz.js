@@ -5,7 +5,7 @@ import AnswerInput from './AnswerInput';
 import { io } from 'socket.io-client';
 
 // Initialize socket connection
-const socket = io('http://localhost:5000');
+const socket = io('http://localhost:5555');
 
 function Quiz() {
   const { gameCode } = useParams(); // Get game code from URL parameters
@@ -32,7 +32,7 @@ function Quiz() {
   useEffect(() => {
     const fetchQuestion = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/questions');
+        const response = await fetch('http://localhost:5555/api/questions');
         const question = await response.json();
         setCurrentQuestion(question); // Set the fetched question
       } catch (error) {

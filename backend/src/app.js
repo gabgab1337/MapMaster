@@ -7,7 +7,7 @@ const http = require('http'); // Import http module
 const { Server } = require('socket.io'); // Import socket.io module
 
 const app = express(); // Create an express application
-const port = 5000; // Define the port number
+const port = 5555; // Define the port number
 const server = http.createServer(app); // Create an HTTP server
 const io = new Server(server, {
   cors: {

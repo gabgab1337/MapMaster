@@ -4,7 +4,7 @@ import { io } from 'socket.io-client';
 import { v4 as uuidv4 } from 'uuid';
 
 // Initialize socket connection
-const socket = io('http://localhost:5000');
+const socket = io('http://localhost:5555');
 
 function JoinGame() {
   // State to store the game code entered by the user
