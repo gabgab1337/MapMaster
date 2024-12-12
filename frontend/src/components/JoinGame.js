@@ -1,27 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import { v4 as uuidv4 } from 'uuid';
 
-// Initialize socket connection
 const socket = io('http://localhost:5555');
 
 function JoinGame() {
-  // State to store the game code entered by the user
   const [gameCode, setGameCode] = useState('');
   const navigate = useNavigate();
 
-  // Function to handle creating a new game
+  useEffect(() => {
+    socket.on('joinSuccess', (data) => {
+      console.log(data.message);
+      navigate(`/quiz/${gameCode}`, { state: { role: data.role } }); 
+    });
+
+    socket.on('joinError', (data) => {
+      console.error(data.message); 
+      alert(data.message);
+    });
+
+    return () => {
+      socket.off('joinSuccess');
+      socket.off('joinError');
+    };
+  }, [gameCode, navigate]);
+
   const handleCreateGame = () => {
-    const newGameCode = uuidv4(); // Generate a new unique game code
-    socket.emit('joinGame', newGameCode); // Emit the joinGame event with the new game code
-    navigate(`/quiz/${newGameCode}`); // Navigate to the quiz page with the new game code
+    const newGameCode = uuidv4();
+    socket.emit('joinGame', newGameCode);
+    setGameCode(newGameCode);
   };
 
-  // Function to handle joining an existing game
   const handleJoinGame = () => {
-    socket.emit('joinGame', gameCode); // Emit the joinGame event with the entered game code
-    navigate(`/quiz/${gameCode}`); // Navigate to the quiz page with the entered game code
+    socket.emit('joinGame', gameCode);
   };
 
   return (
@@ -32,7 +44,7 @@ function JoinGame() {
         type="text"
         placeholder="Enter game code"
         value={gameCode}
-        onChange={(e) => setGameCode(e.target.value)} // Update the game code state when the input value changes
+        onChange={(e) => setGameCode(e.target.value)}
       />
       <button onClick={handleJoinGame}>Join Game</button>
     </div>

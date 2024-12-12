@@ -1,80 +1,107 @@
-const express = require('express'); // Import express module
-const bodyParser = require('body-parser'); // Import body-parser module
-const cors = require('cors'); // Import cors module
-const fs = require('fs'); // Import file system module
-const path = require('path'); // Import path module
-const http = require('http'); // Import http module
-const { Server } = require('socket.io'); // Import socket.io module
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
+const http = require('http');
+const { Server } = require('socket.io');
 
-const app = express(); // Create an express application
-const port = 5555; // Define the port number
-const server = http.createServer(app); // Create an HTTP server
+const app = express();
+const port = 5555;
+const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000", // Allow requests from this origin
-    methods: ["GET", "POST"] // Allow these HTTP methods
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"]
   }
 });
 
-app.use(bodyParser.json()); // Use body-parser middleware to parse JSON requests
-app.use(cors()); // Use CORS middleware to allow cross-origin requests
+app.use(bodyParser.json());
+app.use(cors());
 
-let questions = []; // Initialize an empty array to store questions
-let currentQuestionIndex = 0; // Initialize the current question index
+let questions = [];
+let currentQuestionIndex = 0;
+const players = {};
+const scores = {};
 
-// Function to load questions from flags.json
 const loadQuestions = () => {
-  const dataPath = path.join(__dirname, 'data', 'flags.json'); // Define the path to the JSON file
-  const data = fs.readFileSync(dataPath, 'utf8'); // Read the file synchronously
-  questions = JSON.parse(data); // Parse the JSON data and store it in the questions array
+  const dataPath = path.join(__dirname, 'data', 'flags.json');
+  const data = fs.readFileSync(dataPath, 'utf8');
+  questions = JSON.parse(data);
 };
 
-// Load questions initially
 loadQuestions();
 
-// Define a route to get the current question
 app.get('/api/questions', (req, res) => {
-  const question = questions[currentQuestionIndex]; // Get the current question
-  res.json(question); // Send the question as a JSON response
+  const question = questions[currentQuestionIndex];
+  res.json(question);
 });
 
-// Define a route to check the answer
-app.post('/api/check-answer', (req, res) => {
-  const { answer, questionId } = req.body; // Extract answer and questionId from the request body
-  const question = questions.find(q => q.id === questionId); // Find the question by ID
-  const correct = question && question.country.toLowerCase() === answer.toLowerCase(); // Check if the answer is correct
-  if (correct) {
-    currentQuestionIndex = (currentQuestionIndex + 1) % questions.length; // Move to the next question
-  }
-  res.json({ correct }); // Send the result as a JSON response
+app.get('/api/scores/:gameCode', (req, res) => {
+  const { gameCode } = req.params;
+  res.json(scores[gameCode] || { player1: 0, player2: 0 });
 });
 
-// WebSocket logic
 io.on('connection', (socket) => {
-  console.log('User connected'); // Log when a user connects
+  console.log('User connected');
 
   socket.on('joinGame', gameCode => {
-    socket.join(gameCode); // Join the user to a game room
-    console.log(`User joined game ${gameCode}`); // Log the game code
+    if (!players[gameCode]) {
+      players[gameCode] = [];
+      scores[gameCode] = { player1: 0, player2: 0 };
+    }
+
+    if (players[gameCode].length < 2) {
+      const playerRole = players[gameCode].length === 0 ? 'player1' : 'player2';
+      players[gameCode].push({ id: socket.id, role: playerRole });
+      socket.join(gameCode);
+      console.log(`User joined game ${gameCode} as ${playerRole}. With ID: ${socket.id}`);
+      socket.emit('joinSuccess', { message: 'Joined game successfully', role: playerRole });
+    } else {
+      socket.emit('joinError', { message: 'Game room is full' });
+    }
   });
 
-  socket.on('submitAnswer', (data)  => {
-    const { gameCode, answer, questionId } = data; // Extract data from the event
-    const question = questions.find(q => q.id === questionId); // Find the question by ID
-    const correct = question && question.country.toLowerCase() === answer.toLowerCase(); // Check if the answer is correct
+  socket.on('submitAnswer', (data) => {
+    const { gameCode, answer, questionId, socketId } = data;
+    console.log('Received answer submission with socket ID:', socketId);
+    console.log('Game code:', gameCode);
+    console.log('Players object:', players);
+    const question = questions.find(q => q.id === questionId);
+    const correct = question && question.country.toLowerCase() === answer.toLowerCase();
     if (correct) {
-      currentQuestionIndex = (currentQuestionIndex + 1) % questions.length; // Move to the next question
+      console.log(`Correct answer: ${answer}`);
+      currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
+      scores[gameCode] = scores[gameCode] || { player1: 0, player2: 0 };
+      console.log('Socket ID:', socketId); 
+      const player = players[gameCode]?.find(p => p.id === socketId);
+      console.log('Player:', player);
+      if (player) {
+        scores[gameCode][player.role]++; 
+      }
     }
-    io.to(gameCode).emit('answerResult', { correct, nextQuestion: questions[currentQuestionIndex] }); // Emit the result to the game room
+    console.log(`Answer submitted: ${answer}, correct: ${correct}, scores:`, scores[gameCode]);
+    io.to(gameCode).emit('answerResult', { correct, nextQuestion: questions[currentQuestionIndex], scores: scores[gameCode] });
   });
 
   socket.on('disconnect', () => {
-    console.log('user disconnected'); // Log when a user disconnects
+    for (const gameCode in players) {
+      if (players.hasOwnProperty(gameCode)) {
+        const playerIndex = players[gameCode].findIndex(p => p.id === socket.id);
+        if (playerIndex !== -1) {
+          players[gameCode].splice(playerIndex, 1);
+          if (players[gameCode].length === 0) {
+            delete players[gameCode];
+            delete scores[gameCode];
+          }
+          console.log(`User disconnected from game ${gameCode}`);
+          break;
+        }
+      }
+    }
   });
-
 });
 
-// Start the server
 server.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`); // Log the server URL
+  console.log(`Server is running on http://localhost:${port}`);
 });

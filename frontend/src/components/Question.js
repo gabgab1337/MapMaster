@@ -1,29 +1,26 @@
 import React, { useState, useEffect } from 'react';
 
-// Component to display a question with a country's flag
 function Question({ question }) {
-  const [flagUrl, setFlagUrl] = useState(''); // State to store the URL of the flag image
+  const [flagUrl, setFlagUrl] = useState('');
 
   useEffect(() => {
-    // Function to fetch the flag image from the API
     const fetchFlag = async () => {
-      const response = await fetch(`https://flagcdn.com/w320/${question.alpha2Code.toLowerCase()}.png`); 
+      const response = await fetch(`https://flagcdn.com/w320/${question.alpha2Code.toLowerCase()}.png`);
       if (response.ok) {
-        setFlagUrl(response.url); // Set the flag URL if the response is successful
+        setFlagUrl(response.url);
       } else {
-        console.error('Błąd pobierania flagi'); // Log an error if the fetch fails
+        console.error('Błąd pobierania flagi');
       }
     };
-
-    fetchFlag(); // Call the fetchFlag function
-  }, [question.alpha2Code]); // Dependency array to re-run the effect when the alpha2Code changes
+    fetchFlag();
+  }, [question.alpha2Code]); 
 
   return (
     <div>
       {flagUrl && <img src={flagUrl} alt={`Flaga ${question.country}`} />} {/* Display the flag image if the URL is available */}
-      <p>Podaj nazwę państwa:</p> {/* Prompt to ask for the country's name */}
+      <p>Podaj nazwę państwa:</p> {/* country's name */}
     </div>
   );
 }
 
-export default Question; // Export the component as the default export
+export default Question;
