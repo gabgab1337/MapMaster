@@ -13,15 +13,17 @@ function Quiz() {
   const [score, setScore] = useState(0);
   const [opponentScore, setOpponentScore] = useState(0);
   const [role, setRole] = useState(location.state?.role || 'player1');
-  const [socketId, setSocketId] = useState('');
+  const [playerId, setPlayerId] = useState(location.state?.playerId || '');
 
   useEffect(() => {
+    console.log('Setting up socket listeners'); // Debugging log
+
     socket.on('connect', () => {
-      setSocketId(socket.id);
       console.log('Socket connected with ID:', socket.id); // Log the socket ID
     });
 
     socket.on('answerResult', (data) => {
+      console.log('Received answerResult event:', data); // Log the received data
       if (data.correct) {
         setScore(data.scores[role]);
         setOpponentScore(data.scores[role === 'player1' ? 'player2' : 'player1']);
@@ -30,7 +32,7 @@ function Quiz() {
     });
 
     return () => {
-      socket.off('connect');
+      console.log('Cleaning up socket listeners'); // Debugging log
       socket.off('answerResult');
     };
   }, [role]);
@@ -49,16 +51,16 @@ function Quiz() {
   }, []);
 
   const handleAnswer = async (answer) => {
-    console.log('Submitting answer with socket ID:', socketId); // Log the socket ID being sent
-    socket.emit('submitAnswer', { gameCode, answer, questionId: currentQuestion.id, socketId });
+    console.log('Submitting answer:', answer); // Debugging log
+    socket.emit('submitAnswer', { gameCode, answer, questionId: currentQuestion.id, playerId });
   };
 
   return (
     <div>
       <h1>Map Master</h1>
       <div>
-        <p>Twój wynik: {score} pkt</p>
-        <p>Wynik przeciwnika: {opponentScore} pkt</p>
+        <p>Your score: {score} pkt</p>
+        <p>Opponent's score: {opponentScore} pkt</p>
       </div>
       {currentQuestion && (
         <>

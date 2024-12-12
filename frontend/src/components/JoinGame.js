@@ -12,11 +12,11 @@ function JoinGame() {
   useEffect(() => {
     socket.on('joinSuccess', (data) => {
       console.log(data.message);
-      navigate(`/quiz/${gameCode}`, { state: { role: data.role } }); 
+      navigate(`/quiz/${gameCode}`, { state: { role: data.role, playerId: data.playerId } });
     });
 
     socket.on('joinError', (data) => {
-      console.error(data.message); 
+      console.error(data.message);
       alert(data.message);
     });
 
@@ -26,14 +26,25 @@ function JoinGame() {
     };
   }, [gameCode, navigate]);
 
+  const getPlayerId = () => {
+    let playerId = localStorage.getItem('playerId');
+    if (!playerId) {
+      playerId = uuidv4();
+      localStorage.setItem('playerId', playerId);
+    }
+    return playerId;
+  };
+
   const handleCreateGame = () => {
     const newGameCode = uuidv4();
-    socket.emit('joinGame', newGameCode);
+    const playerId = getPlayerId();
+    socket.emit('joinGame', { gameCode: newGameCode, playerId });
     setGameCode(newGameCode);
   };
 
   const handleJoinGame = () => {
-    socket.emit('joinGame', gameCode);
+    const playerId = getPlayerId();
+    socket.emit('joinGame', { gameCode, playerId });
   };
 
   return (

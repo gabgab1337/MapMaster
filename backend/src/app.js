@@ -45,26 +45,26 @@ app.get('/api/scores/:gameCode', (req, res) => {
 io.on('connection', (socket) => {
   console.log('User connected');
 
-  socket.on('joinGame', gameCode => {
+  socket.on('joinGame', ({ gameCode, playerId }) => {
     if (!players[gameCode]) {
       players[gameCode] = [];
-      scores[gameCode] = { player1: 0, player2: 0 };
+      scores[gameCode] = { player1: 0, player2: 0 }; // Initialize scores for the game room
     }
 
     if (players[gameCode].length < 2) {
       const playerRole = players[gameCode].length === 0 ? 'player1' : 'player2';
-      players[gameCode].push({ id: socket.id, role: playerRole });
+      players[gameCode].push({ id: playerId, role: playerRole });
       socket.join(gameCode);
-      console.log(`User joined game ${gameCode} as ${playerRole}. With ID: ${socket.id}`);
-      socket.emit('joinSuccess', { message: 'Joined game successfully', role: playerRole });
+      console.log(`User joined game ${gameCode} as ${playerRole}. With Player ID: ${playerId}`);
+      socket.emit('joinSuccess', { message: 'Joined game successfully', role: playerRole, playerId });
     } else {
       socket.emit('joinError', { message: 'Game room is full' });
     }
   });
 
   socket.on('submitAnswer', (data) => {
-    const { gameCode, answer, questionId, socketId } = data;
-    console.log('Received answer submission with socket ID:', socketId);
+    const { gameCode, answer, questionId, playerId } = data;
+    console.log('Received answer submission with player ID:', playerId);
     console.log('Game code:', gameCode);
     console.log('Players object:', players);
     const question = questions.find(q => q.id === questionId);
@@ -73,11 +73,11 @@ io.on('connection', (socket) => {
       console.log(`Correct answer: ${answer}`);
       currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
       scores[gameCode] = scores[gameCode] || { player1: 0, player2: 0 };
-      console.log('Socket ID:', socketId); 
-      const player = players[gameCode]?.find(p => p.id === socketId);
+      console.log('Player ID:', playerId);
+      const player = players[gameCode]?.find(p => p.id === playerId);
       console.log('Player:', player);
       if (player) {
-        scores[gameCode][player.role]++; 
+        scores[gameCode][player.role]++; // Increment the score for the correct player
       }
     }
     console.log(`Answer submitted: ${answer}, correct: ${correct}, scores:`, scores[gameCode]);
@@ -92,7 +92,7 @@ io.on('connection', (socket) => {
           players[gameCode].splice(playerIndex, 1);
           if (players[gameCode].length === 0) {
             delete players[gameCode];
-            delete scores[gameCode];
+            delete scores[gameCode]; // Remove scores for the game room
           }
           console.log(`User disconnected from game ${gameCode}`);
           break;
