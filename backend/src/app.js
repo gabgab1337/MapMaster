@@ -78,9 +78,14 @@ io.on('connection', (socket) => {
       console.log('Player:', player);
       if (player) {
         scores[gameCode][player.role]++; // Increment the score for the correct player
+        if (scores[gameCode][player.role] >= 10) {
+          io.to(gameCode).emit('gameOver', { winner: player.role });
+          return;
+        }
       }
     }
     console.log(`Answer submitted: ${answer}, correct: ${correct}, scores:`, scores[gameCode]);
+    console.log(`Emitting answerResult event to gameCode: ${gameCode}`);
     io.to(gameCode).emit('answerResult', { correct, nextQuestion: questions[currentQuestionIndex], scores: scores[gameCode] });
   });
 

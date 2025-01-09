@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import Question from './Question';
 import AnswerInput from './AnswerInput';
-import { io } from 'socket.io-client';
-
-const socket = io('http://localhost:5555');
+import QuizResult from './QuizResult';
+import socket from '../socket';
 
 function Quiz() {
   const { gameCode } = useParams();
@@ -14,16 +13,19 @@ function Quiz() {
   const [opponentScore, setOpponentScore] = useState(0);
   const [role, setRole] = useState(location.state?.role || 'player1');
   const [playerId, setPlayerId] = useState(location.state?.playerId || '');
+  const [gameOver, setGameOver] = useState(false);
+  const [result, setResult] = useState('');
 
   useEffect(() => {
-    console.log('Setting up socket listeners'); // Debugging log
+    console.log('Setting up socket listeners');
+    console.log('Game code:', gameCode);
 
     socket.on('connect', () => {
-      console.log('Socket connected with ID:', socket.id); // Log the socket ID
+      console.log('Socket connected with ID:', socket.id); 
     });
 
     socket.on('answerResult', (data) => {
-      console.log('Received answerResult event:', data); // Log the received data
+      console.log('Received answerResult event:', data); 
       if (data.correct) {
         setScore(data.scores[role]);
         setOpponentScore(data.scores[role === 'player1' ? 'player2' : 'player1']);
@@ -31,11 +33,18 @@ function Quiz() {
       setCurrentQuestion(data.nextQuestion);
     });
 
+    socket.on('gameOver', (data) => {
+      console.log('Received gameOver event:', data);
+      setGameOver(true);
+      setResult(data.winner === role ? 'win' : 'lose');
+    });
+
     return () => {
-      console.log('Cleaning up socket listeners'); // Debugging log
+      console.log('Cleaning up socket listeners');
       socket.off('answerResult');
+      socket.off('gameOver');
     };
-  }, [role]);
+  }, [role, gameCode]);
 
   useEffect(() => {
     const fetchQuestion = async () => {
@@ -51,16 +60,20 @@ function Quiz() {
   }, []);
 
   const handleAnswer = async (answer) => {
-    console.log('Submitting answer:', answer); // Debugging log
+    console.log('Submitting answer:', answer);
     socket.emit('submitAnswer', { gameCode, answer, questionId: currentQuestion.id, playerId });
   };
+
+  if (gameOver) {
+    return <QuizResult result={result} />;
+  }
 
   return (
     <div>
       <h1>Map Master</h1>
       <div>
-        <p>Your score: {score} pkt</p>
-        <p>Opponent's score: {opponentScore} pkt</p>
+        <p>Your score: {score} points</p>
+        <p>Opponent's score: {opponentScore} points</p>
       </div>
       {currentQuestion && (
         <>
@@ -68,6 +81,9 @@ function Quiz() {
           <AnswerInput onAnswer={handleAnswer} />
         </>
       )}
+      <div>
+        <p>Your game code: <strong>{gameCode}</strong></p>
+      </div>
     </div>
   );
 }

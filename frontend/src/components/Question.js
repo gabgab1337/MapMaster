@@ -18,7 +18,7 @@ function Question({ question }) {
   return (
     <div>
       {flagUrl && <img src={flagUrl} alt={`Flaga ${question.country}`} />} {/* Display the flag image if the URL is available */}
-      <p>Podaj nazwę państwa:</p> {/* country's name */}
+      <p>What country's flag is that?</p> {/* country's name */}
     </div>
   );
 }

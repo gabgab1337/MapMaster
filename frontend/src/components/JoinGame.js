@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { io } from 'socket.io-client';
 import { v4 as uuidv4 } from 'uuid';
-
-const socket = io('http://localhost:5555');
+import socket from '../socket';
 
 function JoinGame() {
   const [gameCode, setGameCode] = useState('');
