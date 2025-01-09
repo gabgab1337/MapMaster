@@ -20,6 +20,8 @@ function Quiz() {
     console.log('Setting up socket listeners');
     console.log('Game code:', gameCode);
 
+    localStorage.setItem('gameCode', gameCode); // Store game code in local storage
+
     socket.on('connect', () => {
       console.log('Socket connected with ID:', socket.id); 
     });
@@ -37,6 +39,7 @@ function Quiz() {
       console.log('Received gameOver event:', data);
       setGameOver(true);
       setResult(data.winner === role ? 'win' : 'lose');
+      localStorage.removeItem('gameCode'); // Remove game code from local storage
     });
 
     return () => {

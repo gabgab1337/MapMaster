@@ -1,8 +1,24 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function QuizResult({ result }) {
   const navigate = useNavigate();
+  const hasIncremented = useRef(false);
+
+  useEffect(() => {
+    if (!hasIncremented.current) {
+      const userScore = parseInt(localStorage.getItem('userScore')) || 0;
+      const userGamesPlayed = parseInt(localStorage.getItem('userGamesPlayed')) || 0;
+
+      if (result === 'win') {
+        localStorage.setItem('userScore', userScore + 1);
+      }
+
+      localStorage.setItem('userGamesPlayed', userGamesPlayed + 1);
+
+      hasIncremented.current = true; // Prevent second increment in dev
+    }
+  }, [result]);
 
   const handleBackToMain = () => {
     navigate('/');

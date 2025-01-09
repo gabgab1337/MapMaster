@@ -24,6 +24,7 @@ let currentQuestionIndex = 0;
 const players = {};
 const scores = {};
 
+// Load questions from flags.json
 const loadQuestions = () => {
   const dataPath = path.join(__dirname, 'data', 'flags.json');
   const data = fs.readFileSync(dataPath, 'utf8');
@@ -51,7 +52,12 @@ io.on('connection', (socket) => {
       scores[gameCode] = { player1: 0, player2: 0 }; // Initialize scores for the game room
     }
 
-    if (players[gameCode].length < 2) {
+    const existingPlayer = players[gameCode].find(p => p.id === playerId);
+    if (existingPlayer) {
+      socket.join(gameCode);
+      console.log(`User rejoined game ${gameCode} as ${existingPlayer.role}. With Player ID: ${playerId}`);
+      socket.emit('joinSuccess', { message: 'Rejoined game successfully', role: existingPlayer.role, playerId });
+    } else if (players[gameCode].length < 2) {
       const playerRole = players[gameCode].length === 0 ? 'player1' : 'player2';
       players[gameCode].push({ id: playerId, role: playerRole });
       socket.join(gameCode);
@@ -78,8 +84,10 @@ io.on('connection', (socket) => {
       console.log('Player:', player);
       if (player) {
         scores[gameCode][player.role]++; // Increment the score for the correct player
-        if (scores[gameCode][player.role] >= 10) {
+        if (scores[gameCode][player.role] >= 3) {
           io.to(gameCode).emit('gameOver', { winner: player.role });
+          delete players[gameCode];
+          delete scores[gameCode];
           return;
         }
       }
