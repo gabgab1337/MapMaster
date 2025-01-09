@@ -1,0 +1,47 @@
+@use 'utility/variables' as *;
+@use 'utility/mixins' as *;
+@use 'components/header';
+@use 'components/footer';
+@use 'elements/buttons';
+@use 'elements/inputs';
+@use 'pages/home';
+@use 'pages/profile';
+@use 'pages/quiz';
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Pacifico&display=swap');
+
+@font-face {
+  font-family: 'Sunflower';
+  src: url('fonts/Sunflower.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  font-size: 10px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  @include fontChanges(1.6rem, normal, 1.5);
+  font-family: $font-family;
+  color: $color-black;
+  background-color: $color-white;
+}
+
+h1 {
+  @include fontChanges(2.5rem, 800, 1.5);
+}
+
+h2 {
+  @include fontChanges(2rem, 700, 1.5);
+}
+
+h3 {
+  @include fontChanges(1.8rem, 600, 1.5);
+}

@@ -1,0 +1,13 @@
+@use '../utility/variables' as *;
+
+.join-game__button--create {
+  background-color: transparent;
+  color: $color-primary;
+  border: 0.1rem solid $color-primary;
+  width: 16rem;
+  padding: 1rem 0;
+  font-size: 1.6rem;
+  border-radius: 30rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}

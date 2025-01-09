@@ -46,16 +46,18 @@ function JoinGame() {
   };
 
   return (
-    <div>
-      <h1>Join or Create Game</h1>
-      <button onClick={handleCreateGame}>Create Game</button>
+    <div className='join-game'>
+      <h2 className='join-game__header'>Create a game...</h2>
+      <button className='join-game__button--create' onClick={handleCreateGame}>Create Game</button>
+      <h2 className='join-game__header'>...or join with a game code!</h2>
       <input
+        className='join-game__input'
         type="text"
         placeholder="Enter game code"
         value={gameCode}
         onChange={(e) => setGameCode(e.target.value)}
       />
-      <button onClick={handleJoinGame}>Join Game</button>
+      <button className='join-game__button--join' onClick={handleJoinGame}>Join Game</button>
     </div>
   );
 }

@@ -1,0 +1,15 @@
+@use '../utility/variables' as *;
+
+.join-game {
+  width: 40%;
+  margin: 0 auto;
+  padding-top: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.join-game__header {
+  font-size: 2.8rem;
+  text-align: center;
+  color: $color-primary;
+}
