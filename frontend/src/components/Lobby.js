@@ -7,7 +7,7 @@ function Lobby() {
   const navigate = useNavigate();
 
   // Extract the gameCode passed along from JoinGame
-  const { gameCode, playerId } = location.state || {};
+  const { gameCode, playerId, role } = location.state || {};
 
   const [players, setPlayers] = useState([]);
   const [countdown, setCountdown] = useState(10);
@@ -49,9 +49,9 @@ function Lobby() {
   // When countdown hits 0, navigate to the quiz
   useEffect(() => {
     if (countdown <= 0) {
-      navigate(`/quiz/${gameCode}`, { state: { playerId } });
+      navigate(`/quiz/${gameCode}`, { state: { playerId, role } });
     }
-  }, [countdown, navigate, gameCode, playerId]);
+  }, [countdown, navigate, gameCode, playerId, role]);
 
   useEffect(() => {
     socket.on('playersList', (data) => {
@@ -66,7 +66,7 @@ function Lobby() {
   }, [gameCode]);
 
   return (
-    <div>
+    <div className="lobby">
       <h2>Lobby</h2>
       <p>Game Code: <strong>{gameCode}</strong></p>
       <p>Players joined: {players.length} of 2</p>

@@ -4,6 +4,8 @@ import JoinGame from './components/JoinGame';
 import Quiz from './components/Quiz';
 import Profile from './components/Profile';
 import Header from './components/Header';
+import Lobby from './components/Lobby';
+import About from './components/About';
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
         <Route path="/" element={<JoinGame />} />
         <Route path="/quiz/:gameCode" element={<Quiz />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/lobby" element={<Lobby />} />
+        <Route path="/about" element={<About />} />
       </Routes>
     </BrowserRouter>
   );

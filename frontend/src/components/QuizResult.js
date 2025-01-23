@@ -16,7 +16,7 @@ function QuizResult({ result }) {
 
       localStorage.setItem('userGamesPlayed', userGamesPlayed + 1);
 
-      hasIncremented.current = true; // Prevent second increment in dev
+      hasIncremented.current = true; // YUUUP
     }
   }, [result]);
 
@@ -25,9 +25,9 @@ function QuizResult({ result }) {
   };
 
   return (
-    <div>
+    <div className="quiz-result">
       <h1>{result === 'win' ? 'YOU WON' : 'YOU LOST'}</h1>
-      <button onClick={handleBackToMain}>Back to Main Screen</button>
+      <button className="join-game__button" onClick={handleBackToMain}>Back to Main Screen</button>
     </div>
   );
 }

@@ -2,9 +2,9 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "src/app.js",
+  "main": "api/index.js",
   "scripts": {
-    "start": "node src/app.js",
+    "start": "api/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,6 +16,7 @@
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "fs": "^0.0.1-security",
+    "serverless-http": "^3.2.0",
     "socket.io": "^4.8.1"
   }
 }
