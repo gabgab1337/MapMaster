@@ -1,0 +1,73 @@
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import socket from '../socket';
+
+function Lobby() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Extract the gameCode passed along from JoinGame
+  const { gameCode, playerId, role } = location.state || {};
+
+  const [players, setPlayers] = useState([]);
+  const [countdown, setCountdown] = useState(10);
+  const [startCountdown, setStartCountdown] = useState(false);
+
+  // Listen for a "playerJoined" event from the server
+  useEffect(() => {
+    socket.on('playerJoined', (joinedPlayerId) => {
+      setPlayers((prev) => {
+        const alreadyInRoom = prev.some(player => player.id === joinedPlayerId);
+        return alreadyInRoom ? prev : [...prev, { id: joinedPlayerId }];
+      });
+    });
+
+    socket.on('playersList', (data) => {
+      setPlayers(data.players);
+    });
+
+    // Request the current players in the room
+    socket.emit('getPlayers', { gameCode });
+
+    return () => {
+      socket.off('playerJoined');
+      socket.off('playersList');
+    };
+  }, [gameCode]);
+
+  // Whenever players count becomes 2, start countdown
+  useEffect(() => {
+    if (players.length === 2) {
+      setStartCountdown(true);
+    }
+  }, [players]);
+
+  // Handle countdown every second
+  useEffect(() => {
+    if (!startCountdown) return;
+    const timer = setInterval(() => {
+      setCountdown((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [startCountdown]);
+
+  // When countdown hits 0, navigate to the quiz
+  useEffect(() => {
+    if (countdown <= 0) {
+      navigate(`/quiz/${gameCode}`, { state: { playerId, role } });
+    }
+  }, [countdown, navigate, gameCode, playerId, role]);
+
+  return (
+    <div className="lobby">
+      <h2>Lobby</h2>
+      <p>Game Code: <strong>{gameCode}</strong></p>
+      <p>Players joined: {players.length} of 2</p>
+      {startCountdown && (
+        <p>Starting in {countdown}...</p>
+      )}
+    </div>
+  );
+}
+
+export default Lobby;

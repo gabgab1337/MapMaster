@@ -10,7 +10,6 @@ function Profile() {
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    // Load data from local storage
     const storedPlayerId = localStorage.getItem('playerId');
     const storedUserName = localStorage.getItem('userName');
     const storedCountry = localStorage.getItem('country');
@@ -23,7 +22,6 @@ function Profile() {
   }, []);
 
   const handleSave = () => {
-    // Save data to local storage
     localStorage.setItem('userName', userName);
     localStorage.setItem('country', country);
     setIsEditing(false);
@@ -37,12 +35,8 @@ function Profile() {
   };
 
   return (
-    <div>
-      <h1>Profile</h1>
-      <div>
-        <label>Player ID: </label>
-        <span>{playerId}</span>
-      </div>
+    <div className="profile">
+      <h1 className="profile__header">YOUR PROFILE</h1>
       <div>
         <label>User Score: </label>
         <span>{userScore}</span>
@@ -72,12 +66,11 @@ function Profile() {
         )}
       </div>
       {isEditing ? (
-        <button onClick={handleSave}>Save</button>
+        <button className="join-game__button" onClick={handleSave}>Save</button>
       ) : (
-        <button onClick={() => setIsEditing(true)}>Edit</button>
+        <button className="join-game__button" onClick={() => setIsEditing(true)}>Edit</button>
       )}
-      <button onClick={handleResetScore}>Reset my score</button>
-      <button onClick={() => navigate('/')}>Back to Main Screen</button>
+      <button className="join-game__button" onClick={handleResetScore}>Reset my score</button>
     </div>
   );
 }

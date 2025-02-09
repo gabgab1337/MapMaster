@@ -1,0 +1,25 @@
+@use '../utility/variables' as *;
+
+.quiz {
+  max-width: 80rem;
+  margin: 0 auto;
+  margin-bottom: 2rem;
+  padding-top: 2rem;
+  text-align: center;
+
+  h1 {
+    font-size: 3.2rem;
+    color: $color-primary;
+  }
+
+}
+
+.quiz-code {
+  margin-top: 2rem;
+  font-size: 2rem;
+  color: $color-primary;
+}
+
+.quiz-score {
+  font-size: 2rem;
+}

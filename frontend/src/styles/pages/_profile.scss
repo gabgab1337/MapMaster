@@ -1,0 +1,17 @@
+@use '../utility/variables' as *;
+
+.profile {
+  width: 40%;
+  margin: 0 auto;
+  padding-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.profile__header {
+  font-size: 2.8rem;
+  text-align: center;
+  color: $color-primary;
+}

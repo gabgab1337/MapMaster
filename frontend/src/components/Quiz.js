@@ -5,7 +5,7 @@ import AnswerInput from './AnswerInput';
 import QuizResult from './QuizResult';
 import socket from '../socket';
 
-function Quiz() {
+function Quiz() {2
   const { gameCode } = useParams();
   const location = useLocation();
   const [currentQuestion, setCurrentQuestion] = useState(null);
@@ -15,9 +15,9 @@ function Quiz() {
   const [playerId, setPlayerId] = useState(location.state?.playerId || '');
   const [gameOver, setGameOver] = useState(false);
   const [result, setResult] = useState('');
+  const [timeLeft, setTimeLeft] = useState(15); // Add state for the timer
 
   useEffect(() => {
-    console.log('Setting up socket listeners');
     console.log('Game code:', gameCode);
 
     localStorage.setItem('gameCode', gameCode); // Store game code in local storage
@@ -33,6 +33,7 @@ function Quiz() {
         setOpponentScore(data.scores[role === 'player1' ? 'player2' : 'player1']);
       }
       setCurrentQuestion(data.nextQuestion);
+      setTimeLeft(15); // Reset the timer for the next question
     });
 
     socket.on('gameOver', (data) => {
@@ -42,17 +43,22 @@ function Quiz() {
       localStorage.removeItem('gameCode'); // Remove game code from local storage
     });
 
+    socket.on('timer', (data) => {
+      setTimeLeft(data.timeLeft);
+    });
+
     return () => {
       console.log('Cleaning up socket listeners');
       socket.off('answerResult');
       socket.off('gameOver');
+      socket.off('timer');
     };
   }, [role, gameCode]);
 
   useEffect(() => {
     const fetchQuestion = async () => {
       try {
-        const response = await fetch('http://localhost:5555/api/questions');
+        const response = await fetch(`http://localhost:5555/api/questions/${gameCode}`); // Fetch from local backend
         const question = await response.json();
         setCurrentQuestion(question);
       } catch (error) {
@@ -60,7 +66,7 @@ function Quiz() {
       }
     };
     fetchQuestion();
-  }, []);
+  }, [gameCode]);
 
   const handleAnswer = async (answer) => {
     console.log('Submitting answer:', answer);
@@ -72,20 +78,23 @@ function Quiz() {
   }
 
   return (
-    <div>
-      <h1>Map Master</h1>
+    <div className="quiz">
       <div>
-        <p>Your score: {score} points</p>
-        <p>Opponent's score: {opponentScore} points</p>
+        <p>CODE: <strong className="quiz-code">{gameCode}</strong></p>
+      </div>
+      <div>
+        <p className="quiz-score">Your score: {score} points</p>
+        <p className="quiz-score">Opponent's score: {opponentScore} points</p>
       </div>
       {currentQuestion && (
         <>
-          <Question question={currentQuestion} />
           <AnswerInput onAnswer={handleAnswer} />
+          <Question question={currentQuestion} />
         </>
       )}
-      <div>
-        <p>Your game code: <strong>{gameCode}</strong></p>
+      <div className="quiz-timer">
+        <p>Time left: {timeLeft} seconds</p>
+        {timeLeft <= 5 && <p style={{ color: 'red' }}>QUICKLY!</p>}
       </div>
     </div>
   );

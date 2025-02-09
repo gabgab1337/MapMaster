@@ -10,13 +10,14 @@ function AnswerInput({ onAnswer }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="answer" onSubmit={handleSubmit}>
       <input
         type="text"
         value={answer}
+        className="answer-input"
         onChange={(e) => setAnswer(e.target.value)}
       />
-      <button type="submit">Odpowiedz</button>
+      <button className="join-game__button" type="submit">Answer</button>
     </form>
   );
 }

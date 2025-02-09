@@ -10,7 +10,13 @@ function JoinGame() {
   useEffect(() => {
     socket.on('joinSuccess', (data) => {
       console.log(data.message);
-      navigate(`/quiz/${gameCode}`, { state: { role: data.role, playerId: data.playerId } });
+      navigate('/lobby', {
+        state: {
+          gameCode,
+          role: data.role,
+          playerId: data.playerId,
+        },
+      });
     });
 
     socket.on('joinError', (data) => {
@@ -25,19 +31,26 @@ function JoinGame() {
   }, [gameCode, navigate]);
 
   const getPlayerId = () => {
-    let playerId = localStorage.getItem('playerId');
-    if (!playerId) {
-      playerId = uuidv4();
-      localStorage.setItem('playerId', playerId);
-    }
+    // Always generate a new playerId to ensure uniqueness
+    const playerId = uuidv4();
+    localStorage.setItem('playerId', playerId);
     return playerId;
   };
 
+  const generateRandomString = () => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < 6; i++) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+  };
+
   const handleCreateGame = () => {
-    const newGameCode = uuidv4();
+    const newGameCode = generateRandomString();
     const playerId = getPlayerId();
     socket.emit('joinGame', { gameCode: newGameCode, playerId });
-    setGameCode(newGameCode);
+    navigate('/lobby', { state: { gameCode: newGameCode, playerId } });
   };
 
   const handleJoinGame = () => {
@@ -46,16 +59,18 @@ function JoinGame() {
   };
 
   return (
-    <div>
-      <h1>Join or Create Game</h1>
-      <button onClick={handleCreateGame}>Create Game</button>
+    <div className='join-game'>
+      <h2 className='join-game__header'>Create a game...</h2>
+      <button className='join-game__button' onClick={handleCreateGame}>Create Game</button>
+      <h2 className='join-game__header'>...or join with a game code!</h2>
       <input
+        className='join-game__input'
         type="text"
         placeholder="Enter game code"
         value={gameCode}
         onChange={(e) => setGameCode(e.target.value)}
       />
-      <button onClick={handleJoinGame}>Join Game</button>
+      <button className='join-game__button' onClick={handleJoinGame}>Join Game</button>
     </div>
   );
 }

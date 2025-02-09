@@ -5,7 +5,7 @@ function Header() {
   return (
     <header className="header">
       <div className="logo">
-        <h1>MapMaster</h1>
+        <h1>MAP MASTER</h1>
       </div>
       <nav className="navbar">
         <ul>
@@ -14,6 +14,9 @@ function Header() {
           </li>
           <li>
             <Link to="/profile">Profile</Link>
+          </li>
+          <li>
+            <Link to="/about">About</Link>
           </li>
         </ul>
       </nav>
