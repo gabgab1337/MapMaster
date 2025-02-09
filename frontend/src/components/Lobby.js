@@ -17,16 +17,21 @@ function Lobby() {
   useEffect(() => {
     socket.on('playerJoined', (joinedPlayerId) => {
       setPlayers((prev) => {
-        const alreadyInRoom = prev.includes(joinedPlayerId);
-        return alreadyInRoom ? prev : [...prev, joinedPlayerId];
+        const alreadyInRoom = prev.some(player => player.id === joinedPlayerId);
+        return alreadyInRoom ? prev : [...prev, { id: joinedPlayerId }];
       });
     });
 
-    // Request the current players in the room (if you implement it server-side)
+    socket.on('playersList', (data) => {
+      setPlayers(data.players);
+    });
+
+    // Request the current players in the room
     socket.emit('getPlayers', { gameCode });
 
     return () => {
       socket.off('playerJoined');
+      socket.off('playersList');
     };
   }, [gameCode]);
 
@@ -52,18 +57,6 @@ function Lobby() {
       navigate(`/quiz/${gameCode}`, { state: { playerId, role } });
     }
   }, [countdown, navigate, gameCode, playerId, role]);
-
-  useEffect(() => {
-    socket.on('playersList', (data) => {
-      setPlayers(data.players);
-    });
-  
-    socket.emit('getPlayers', { gameCode }); // Request existing players right away
-  
-    return () => {
-      socket.off('playersList');
-    };
-  }, [gameCode]);
 
   return (
     <div className="lobby">

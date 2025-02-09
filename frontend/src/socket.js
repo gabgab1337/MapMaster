@@ -1,5 +1,5 @@
 import { io } from 'socket.io-client';
 
-const socket = io('https://mapmasteronline.vercel.app'); // Replace with your actual backend URL
+const socket = io('http://localhost:5555'); // Connect to the local backend
 
 export default socket;

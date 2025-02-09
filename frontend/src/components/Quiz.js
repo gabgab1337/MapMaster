@@ -5,7 +5,7 @@ import AnswerInput from './AnswerInput';
 import QuizResult from './QuizResult';
 import socket from '../socket';
 
-function Quiz() {
+function Quiz() {2
   const { gameCode } = useParams();
   const location = useLocation();
   const [currentQuestion, setCurrentQuestion] = useState(null);
@@ -58,7 +58,7 @@ function Quiz() {
   useEffect(() => {
     const fetchQuestion = async () => {
       try {
-        const response = await fetch(`https://mapmasteronline.app/api/questions/${gameCode}`); // Replace with your actual frontend URL
+        const response = await fetch(`http://localhost:5555/api/questions/${gameCode}`); // Fetch from local backend
         const question = await response.json();
         setCurrentQuestion(question);
       } catch (error) {
