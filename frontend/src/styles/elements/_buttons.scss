@@ -1,13 +1,19 @@
 @use '../utility/variables' as *;
 
-.join-game__button--create {
+.join-game__button {
   background-color: transparent;
   color: $color-primary;
-  border: 0.1rem solid $color-primary;
+  border: 0.15rem solid $color-primary;
   width: 16rem;
   padding: 1rem 0;
   font-size: 1.6rem;
   border-radius: 30rem;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.join-game__button:hover {
+  background-color: $color-primary;
+  color: $color-white;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
